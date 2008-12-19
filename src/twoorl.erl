@@ -23,8 +23,18 @@
 -include("twoorl.hrl").
 -include("twoorl_app.hrl").
 
-start(_Type, _Args) ->
-    twoorl_sup:start_link([]).
+start() ->
+    process_flag(trap_exit, true),
+    Inets = (catch application:start(inets)),
+    Crypto = (catch application:start(crypto)),
+    Mnesia = (catch application:start(mnesia)),
+    start_phase(mysql, normal, [{?DB_HOSTNAME, ?DB_USERNAME, ?DB_PASSWORD, ?DB_DATABASE, ?DB_POOL_SIZE}]),
+    start_phase(mnesia, normal, [session]),
+    start_phase(compile, normal, []),
+    [{inets, Inets}, {crypto, Crypto}, {mnesia, Mnesia}].
+
+start(_Type, Args) ->
+    twoorl_sup:start_link([Args]).
 
 start_phase(mysql, _, DBConfigs) ->
     [mysql_connect(Hostname, User, Password, Database, PoolSize)
@@ -93,12 +103,3 @@ compile_dir(appconfig) ->
 compile_dir(Dir) ->
     Dir.
 
-start() ->
-    process_flag(trap_exit, true),
-    Inets = (catch application:start(inets)),
-    Crypto = (catch application:start(crypto)),
-    Mnesia = (catch application:start(mnesia)),
-    start_phase(mysql, normal, [{?DB_HOSTNAME, ?DB_USERNAME, ?DB_PASSWORD, ?DB_DATABASE, ?DB_POOL_SIZE}]),
-    start_phase(mnesia, normal, [session]),
-    start_phase(compile, normal, []),
-    [{inets, Inets}, {crypto, Crypto}, {mnesia, Mnesia}].
