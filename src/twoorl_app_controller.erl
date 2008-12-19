@@ -23,13 +23,12 @@
 -include("twoorl.hrl").
 
 hook(A) ->
-    A1 = normalize_appmoddata(A),
-    case erlyweb:get_initial_ewc({ewc, A1}) of
-	{page, "/"} -> start(A1);
+    case erlyweb:get_initial_ewc({ewc, A}) of
+	{page, "/"} -> start(A);
 	{page, "/static" ++ _} = Ewc -> Ewc;
 	{page, "/favicon.ico"} -> {page, "/static/favicon.ico"};
 	{page, [$/ | Username] = Path} ->
-	    A2 = yaws_arg:appmoddata(A1, "/users/" ++ Username),
+	    A2 = yaws_arg:appmoddata(A, "/users/" ++ Username),
 	    A3 = yaws_arg:add_to_opaque(A2, {paging_path, Path}),
 	    start(A3);
 
@@ -38,7 +37,7 @@ hook(A) ->
 	 [_, [Username]]} ->
 	    {response, [{redirect_local, {any_path, [$/|Username]}, 301}]};
 	_Ewc ->
-	    start(A1)
+	    start(A)
     end.
 
 start(A) ->
@@ -102,19 +101,3 @@ lookup(Key) ->
 	Other ->
 	    exit({unexpected_result, Other})
     end.
-
-%% to avoid annoying Yaws inconsistencies
-normalize_appmoddata(A) ->
-    Val1 = 
-	case yaws_arg:appmoddata(A) of
-	    [] ->
-		"/";
-	    Val = [$/ | _] ->
-		Val;
-	    Val ->
-		[$/ | Val]
-	end,
-    yaws_arg:appmoddata(A, Val1).
-	
-		
-	    
