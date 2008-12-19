@@ -36,10 +36,6 @@ BOOT OPTION B - as part of an OTP supervisor tree (with yaws in embedded mode)
 			- application:start(twoorl)
 		  This last step will execute twoorl:start/2 not twoorl:start/1 (which
 		  is the one used in the BOOT OPTION A.
-	$ make clean && make
-$ erl -sname twoorlapp -setcookie twoorl -mnesia dir "'twoorl.mnesia'" -yaws embedded true -pa ebin -boot start_sasl
-1> [application:start(X) || X <- [inets, crypto, mnesia, twoorl]].
-[ok, ok, ok, ok]
 
 Enjoy!
 Davide :) (with many thanks to Yariv and the community for sharing their code!)
