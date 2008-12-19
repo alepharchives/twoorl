@@ -37,9 +37,15 @@ BOOT OPTION B - as part of an OTP supervisor tree (with yaws in embedded mode)
 		  This last step will execute twoorl:start/2 not twoorl:start/1 (which
 		  is the one used in the BOOT OPTION A.
 	$ make clean && make
-$ erl -sname twoorlapp -setcookie twoorl -mnesia dir "'twoorl.mnesia'" -yaws embedded true -pa ebin -boot start_sasl
-1> [application:start(X) || X <- [inets, crypto, mnesia, twoorl]].
-[ok, ok, ok, ok]
+
+---
+Additional notes for Git branch "packaged"
+This branch includes the changes made in branch "non_root_install" and repacks
+the project using erlang packages (http://www.erlang.org/doc/man/packages.html).
+For now this code will only work with code from this erlyweb branch:
+http://github.com/davide/erlyweb/tree/erlyweb-packaged
+The main advantage theses changes bring is that you can now host several erlyweb
+webapps independently in the same yaws server running (without code clashes).
 
 Enjoy!
 Davide :) (with many thanks to Yariv and the community for sharing their code!)
