@@ -13,6 +13,7 @@
     }
   </style>
   <% [header_item(I) || I <- HeaderItems] %>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
 </head>
 
 <body>
@@ -20,7 +21,14 @@
 <% Data %>
 </div>
 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+<script type="text/javascript">
+$(function(){
+	Twoorl = { };
+	Twoorl.Config = { };
+	Twoorl.Config.baseUrl = '<% erlyweb:get_app_root(A) %>';
+});
+</script>
+
 <script type="text/javascript" src="<% erlyweb:get_app_root(A) %>/static/twoorl.js"></script>
 <% twoorl_snippets:google_analytics() %>
 </body>

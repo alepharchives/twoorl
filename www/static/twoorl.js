@@ -30,7 +30,7 @@ function send() {
     if (msg.length > 0) {
 	$("#txt")[0].value = "";
 	$("#chars").text("" + maxChars);
-	$.post("/api/send", {"msg": msg, "get_html": "true"},
+	$.post(Twoorl.Global.baseUrl + "/api/send", {"msg": msg, "get_html": "true"},
 	       function(html) {
 		   $("#placeholder").prepend(html);
 		   $("#txt").focus();
@@ -39,7 +39,7 @@ function send() {
 }
 
 function follow(username, val) {
-    $.post("/api/follow",
+    $.post(Twoorl.Global.baseUrl + "/api/follow",
 	   {"username": username,
 	    "value": val},
 	   function(res) {
@@ -55,7 +55,7 @@ function follow(username, val) {
 }
 
 function toggle_twitter(input) {
-    $.post("/api/toggle_twitter",
+    $.post(Twoorl.Global.baseUrl + "/api/toggle_twitter",
 	   {"value": input.value == "on"},
 	   function(res) {
 	       if (res != "ok") {
