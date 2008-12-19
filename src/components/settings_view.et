@@ -1,9 +1,9 @@
-<%@ index([{B, {TwitterUsername, TwitterPassword, TwitterEnabledChecked,
+<%@ index(A, [{B, {TwitterUsername, TwitterPassword, TwitterEnabledChecked,
     GravatarEnabledChecked, Background}},
     UiMsgs]) %>
 <div class="t2"><% B(settings_cap) %></div>
 <% UiMsgs %>
-<form action="/settings" method="post">
+<form action="<% erlyweb:get_app_root(A) %>/settings" method="post">
   <div class="section">
     <div class="t3">Gravatar</div>
     <div><% B(use_gravatar) %> <input name="gravatar_enabled" type="checkbox" <% GravatarEnabledChecked %>/></div>

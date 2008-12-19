@@ -1,15 +1,15 @@
-<%@ catch_all({B, Err}) %>
+<%@ catch_all(_A, {B, Err}) %>
 <% B(Err) %>
 
-<%@ catch_all([{B, {Username, ToFollow, Gravatar, FeedLink}}, Data]) %>
+<%@ catch_all(A, [{B, {Username, ToFollow, Gravatar, FeedLink}}, Data]) %>
 <div class="header1">
   <table>
     <tr>
       <td><% Gravatar %></td>
       <td><div class="t3"><% B({timeline_of, Username}) %></div></td>
       <td class="following_links">
-	<a href="/following/<% Username %>"><% B(following) %></a> |
-	<a href="/followers/<% Username %>"><% B(followers) %></a>
+	<a href="<% erlyweb:get_app_root(A) %>/following/<% Username %>"><% B(following) %></a> |
+	<a href="<% erlyweb:get_app_root(A) %>/followers/<% Username %>"><% B(followers) %></a>
       </td>
     </tr>
   </table>

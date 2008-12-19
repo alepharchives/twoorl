@@ -40,7 +40,7 @@ index(A) ->
 	  fun({Tab, _Href, Title}) when Tab == Appmod ->
 		     Title;
 	     ({_Tab, Href, Title}) ->
-		  erlyweb_html:a(["", Href], Title)
+		  erlyweb_html:a([erlyweb:get_app_root(A), Href], Title)
 	  end, Tabs),
     {data, Links}.
 	      

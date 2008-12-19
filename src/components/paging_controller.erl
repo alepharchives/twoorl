@@ -115,7 +115,7 @@ get_links(A, NumPages, Page, Params) ->
 	     Val ->
 		 yaws_arg:appmoddata(A, Val)
 	 end,
-    BaseUrl1 = erlyweb_util:get_url_prefix(A1),
+    BaseUrl1 = yaws_arg:url_prefix(A1),
 
     BaseUrl2 = 
 	[BaseUrl1, "?", lists:map(fun({Key, Val}) -> [Key,$=,Val,$&] end,
