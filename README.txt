@@ -36,10 +36,17 @@ BOOT OPTION B - as part of an OTP supervisor tree (with yaws in embedded mode)
 			- application:start(twoorl)
 		  This last step will execute twoorl:start/2 not twoorl:start/1 (which
 		  is the one used in the BOOT OPTION A.
-	$ make clean && make
-$ erl -sname twoorlapp -setcookie twoorl -mnesia dir "'twoorl.mnesia'" -yaws embedded true -pa ebin -boot start_sasl
-1> [application:start(X) || X <- [inets, crypto, mnesia, twoorl]].
-[ok, ok, ok, ok]
+
+---
+Additional notes for Git branch "non_root_install"
+This branch implements example code of deploying twoorl on a path different from
+the default root. There are many components that must work together for such an
+installation to be successful:
+ - erlyweb must support it (my fork does: http://github.com/davide/erlyweb/tree/non_root_install)
+ - the view must get #arg as the first argument and use it to correctly prefix their
+   links via erlyweb:get_app_root(A).
+ - the javascript code must get hold of the app_root in order to build correct links
+   (currently this is done using an object (Twoorl) in the global namespace)
 
 Enjoy!
 Davide :) (with many thanks to Yariv and the community for sharing their code!)
