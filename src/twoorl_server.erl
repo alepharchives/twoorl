@@ -25,37 +25,32 @@
 -include("twoorl.hrl").
 
 -export([start_link/1, init/1, handle_call/3, handle_cast/2, handle_info/2]).
--export([terminate/2, code_change/3, set_conf/0]).
+-export([terminate/2, code_change/3, set_conf/1]).
 
 start_link(Args) ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, Args, []).
 
-init(_) ->
+init([ServerConfigs]) ->
     process_flag(trap_exit, true),
     case application:start(yaws) of
-        ok -> twoorl_server:set_conf();
+        ok -> twoorl_server:set_conf(ServerConfigs);
         Error -> {stop, Error}
     end.
 
-set_conf() ->
+set_conf(ServerConfigs) ->
     GC = yaws_config:make_default_gconf(false, "twoorl"),
-    SC1 = #sconf{
-        port = 5001,
-        servername = "twoorl.com",
-        listen = {0, 0, 0, 0},
-        docroot = "www",
-        appmods = [{"/", erlyweb}],
-        opaque = [{"appname", "twoorl"}]
-    },
-    SC2 = #sconf{
-        port = 5001,
-        servername = "localhost",
-        listen = {0, 0, 0, 0},
-        docroot = "www",
-        appmods = [{"/", erlyweb}],
-        opaque = [{"appname", "twoorl"}]
-    },
-    try yaws_api:setconf(GC, [[SC1, SC2]]) of
+    SCs = lists:map(
+		fun(Sconf) ->
+			#sconf{
+				port = proplists:get_value(port, Sconf, 80),
+				servername = proplists:get_value(servername, Sconf, "localhost"),
+				listen = proplists:get_value(listen, Sconf, {0,0,0,0}),
+				docroot = proplists:get_value(docroot, Sconf, "www"),
+				appmods = proplists:get_value(appmods, Sconf, [{"/", erlyweb}]),
+				opaque = proplists:get_value(opaque, Sconf, [{"appname", "twoorl"}])
+			    }
+		end, ServerConfigs),
+    try yaws_api:setconf(GC, [SCs]) of
         ok -> {ok, started};
         Errora -> {stop, Errora}
     catch

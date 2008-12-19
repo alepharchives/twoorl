@@ -4,7 +4,24 @@
   {modules, [twoorl, twoorl_server, twoorl_sup]},
   {registered, [twoorl]},
   {applications, [kernel, stdlib, sasl, crypto, inets, mnesia]},
-  {mod, {twoorl, []}},
+  {mod, {twoorl, [
+      [
+        {port, 5001},
+        {servername, "twoorl.com"},
+        {listen, {0, 0, 0, 0}},
+        {docroot, "www"},
+        {appmods, [{"/", erlyweb}]},
+        {opaque, [{"appname", "twoorl"}]}
+      ],
+      [
+        {port, 5001},
+        {servername, "localhost"},
+        {listen, {0, 0, 0, 0}},
+        {docroot, "www"},
+        {appmods, [{"/", erlyweb}]},
+        {opaque, [{"appname", "twoorl"}]}
+      ]
+    ]}},
   {env, []},
   {start_phases, [
     {mysql, [
