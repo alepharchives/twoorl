@@ -5,11 +5,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <title>Twoorl</title>
-  <link rel="stylesheet" href="<% erlyweb:get_app_root(A) %>/static/style.css" type="text/css"/>
+  <link rel="stylesheet" href="<% .erlyweb:get_app_root(A) %>/static/style.css" type="text/css"/>
   <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
   <style type="text/css">
     body {
-      background-image: url('<% erlyweb:get_app_root(A) %><% Background %>');
+      background-image: url('<% .erlyweb:get_app_root(A) %><% Background %>');
     }
   </style>
   <% [header_item(I) || I <- HeaderItems] %>
@@ -25,11 +25,11 @@
 $(function(){
 	Twoorl = { };
 	Twoorl.Config = { };
-	Twoorl.Config.baseUrl = '<% erlyweb:get_app_root(A) %>';
+	Twoorl.Config.baseUrl = '<% .erlyweb:get_app_root(A) %>';
 });
 </script>
 
-<script type="text/javascript" src="<% erlyweb:get_app_root(A) %>/static/twoorl.js"></script>
+<script type="text/javascript" src="<% .erlyweb:get_app_root(A) %>/static/twoorl.js"></script>
 <% twoorl_snippets:google_analytics() %>
 </body>
 </html>

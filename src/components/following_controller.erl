@@ -18,7 +18,7 @@
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog.com]
 %% @copyright Yariv Sadan, 2008
 
--module(following_controller).
+-module(twoorl.following_controller).
 -compile(export_all).
 -include("twoorl.hrl").
 

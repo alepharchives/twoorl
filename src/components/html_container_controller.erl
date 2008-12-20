@@ -18,7 +18,7 @@
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog.com]
 %% @copyright Yariv Sadan, 2008
 
--module(html_container_controller).
+-module(twoorl.html_container_controller).
 -export([private/0, index/3]).
 -include("twoorl.hrl").
 
@@ -26,13 +26,13 @@ private() ->
     true.
 
 index(_A, Ewc, PhasedVars) ->
-    Background = case proplists:get_value(background, PhasedVars) of
+    Background = case .proplists:get_value(background, PhasedVars) of
 		      undefined ->
 			  ?DEFAULT_BACKGROUND;
 		      Bg ->
 			  Bg
 		  end,
-    HeaderItems = case proplists:get_value(header_items, PhasedVars) of
+    HeaderItems = case .proplists:get_value(header_items, PhasedVars) of
 		      undefined -> [];
 		      Other -> Other
 		  end,

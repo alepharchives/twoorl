@@ -18,7 +18,7 @@
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog.com]
 %% @copyright Yariv Sadan, 2008
 
--module(reply).
+-module(twoorl.reply).
 -compile(export_all).
 
 save_replies(MsgId, Recipients) ->

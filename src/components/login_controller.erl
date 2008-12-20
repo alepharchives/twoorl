@@ -18,15 +18,15 @@
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog.com]
 %% @copyright Yariv Sadan, 2008
 
--module(login_controller).
+-module(twoorl.login_controller).
 -compile(export_all).
 -include("twoorl.hrl").
 
 index(A) ->
-    case yaws_arg:method(A) of
+    case .yaws_arg:method(A) of
 	'POST' ->
 	    {[Usr, Password], Errs} =
-		erlyweb_forms:validate(
+		.erlyweb_forms:validate(
 		  A,
 		  ["username", "password"],
 		  fun(Field, Val) ->
@@ -43,8 +43,8 @@ index(A) ->
 		  end),
 	    Errs1 = 
 		if Errs == [] ->
-%%			twoorl_stats:cast({record, site_login}),
-			Hash = crypto:sha([usr:username(Usr), Password]),
+%%			.twoorl_stats:cast({record, site_login}),
+			Hash = .crypto:sha([usr:username(Usr), Password]),
 			case usr:password(Usr) of
 			    Hash ->
 				[];
@@ -73,8 +73,8 @@ get_usr(Username) ->
     end.
 
 do_login(A, Usr) ->
-    Key = twoorl_util:gen_key(),
-    LangCookie = erlyweb_util:get_cookie("lang", A),
+    Key = util:gen_key(),
+    LangCookie = .erlyweb_util:get_cookie("lang", A),
     Usr1 = case LangCookie of
 	       undefined ->
 		   Usr;
@@ -92,11 +92,11 @@ do_login(A, Usr) ->
 		   end
 	   end,
 
-    twoorl_util:update_session(A, Usr1, Key),
+    util:update_session(A, Usr1, Key),
     spawn(fun() ->
 		  usr:update([{session_key, Key}], {id,'=',usr:id(Usr1)})
 	  end),
-    Response = [twoorl_util:cookie("key", Key)],
+    Response = [util:cookie("key", Key)],
     
     %% set the language cookie for the session if it's not defined
     Response1 = if LangCookie == undefined ->
@@ -104,7 +104,7 @@ do_login(A, Usr) ->
 			    undefined ->
 				Response;
 			    Other ->
-				[twoorl_util:cookie("lang", Other) | Response]
+				[util:cookie("lang", Other) | Response]
 			end;
 		   true ->
 			Response

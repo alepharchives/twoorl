@@ -20,7 +20,7 @@
 %% 
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog@gmail.com]
 %% @copyright Yariv Sadan, 2008
--module(feeds_controller).
+-module(twoorl.feeds_controller).
 -export([catch_all/2]).
 
 catch_all(A, ["main", Type]) ->
@@ -79,7 +79,7 @@ get_funs(A, Messages) ->
  	     [M:usr_username(), $:, 32,
 	      M:body_nolinks()];
 	(pubdate) ->
-	    twoorl_util:format_datetime(
+	    util:format_datetime(
 	      element(2,M:created_on()));
 	(guid) ->
 	     msg:get_href(A, M, absolute);

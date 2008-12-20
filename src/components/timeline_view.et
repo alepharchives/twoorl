@@ -5,7 +5,7 @@
       <% if Gravatar =/= undefined -> gravatar(Gravatar); true -> [] end %>
       <td>
 	<% if Userlink =/= undefined -> user_link(Userlink); true -> [] end %>
-	<span class="msgbody"><% Body %></span> <span class="time"><a href="<% erlyweb:get_app_root(A) %><% Href %>"><% Time %></a></span></td>
+	<span class="msgbody"><% Body %></span> <span class="time"><a href="<% .erlyweb:get_app_root(A) %><% Href %>"><% Time %></a></span></td>
     </tr>
   </table>
 </div>

@@ -18,7 +18,7 @@
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog.com]
 %% @copyright Yariv Sadan, 2008
 
--module(user_list_controller).
+-module(twoorl.user_list_controller).
 -compile(export_all).
 -include("twoorl.hrl").
 
@@ -62,7 +62,7 @@ show_related(A, Username, IsFollowing) ->
 
 show(A, Usr, IsFollowing, Friends) ->
     Userlink = Usr:get_link(),
-    B = twoorl_util:get_bundle(A),
+    B = util:get_bundle(A),
     Title = if IsFollowing ->
 		    B({friends_of, Userlink});
 	       true ->

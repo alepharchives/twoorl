@@ -18,6 +18,6 @@
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog.com]
 %% @copyright Yariv Sadan, 2008
 
--module(following).
+-module(twoorl.following).
 -compile(export_all).
 

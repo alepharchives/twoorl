@@ -18,7 +18,7 @@
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog.com]
 %% @copyright Yariv Sadan, 2008
 
--module(users_controller).
+-module(twoorl.users_controller).
 -compile(export_all).
 -include("twoorl.hrl").
 
@@ -28,7 +28,7 @@ catch_all(A, [Username]) ->
 	    ?Data(A, {no_user, Username});
 	Usr ->
 	    ToFollow =
-		case twoorl_util:get_usr(A) of
+		case util:get_usr(A) of
 		    undefined = Val -> Val;
 		    Me ->
 			case Me:id() == Usr:id() of
@@ -46,7 +46,7 @@ catch_all(A, [Username]) ->
 	    {response,
 	     [{body,
 	       [?Data(A, {Username, ToFollow, usr:get_icon(Usr),
-			  twoorl_util:get_feed_link(FeedUrl, <<"RSS">>)}),
+			  util:get_feed_link(FeedUrl, <<"RSS">>)}),
 		{ewc, timeline, show, [A, [Usr:id()],
 				       [{big_first, true},
 					{hide_user, true}]]}]},

@@ -18,12 +18,12 @@
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog.com]
 %% @copyright Yariv Sadan, 2008
 
--module(home_controller).
+-module(twoorl.home_controller).
 -compile(export_all).
 -include("twoorl.hrl").
 
 index(A) ->
-    twoorl_util:auth(
+    util:auth(
       A,
       fun(Usr) ->
 	      Ids = usr:get_timeline_usr_ids(Usr),

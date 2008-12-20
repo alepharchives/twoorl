@@ -1,23 +1,23 @@
--module(settings_controller).
+-module(twoorl.settings_controller).
 -export([index/1]).
 -include("twoorl.hrl").
 
 index(A) ->
-    twoorl_util:auth(A, fun(Usr) -> process_request(A, Usr) end).
+    util:auth(A, fun(Usr) -> process_request(A, Usr) end).
 
 
 process_request(A, Usr) ->
-    case yaws_arg:method(A) of
+    case .yaws_arg:method(A) of
 	'POST' ->
-	    Params = yaws_api:parse_post(A),
+	    Params = .yaws_api:parse_post(A),
 	    TwitterEnabled = is_checked("twitter_enabled", Params),
 	    GravatarEnabled = is_checked("gravatar_enabled", Params),
 	    ValidationFun = get_validation_fun(TwitterEnabled),
-	    Background = proplists:get_value("background", Params),
+	    Background = .proplists:get_value("background", Params),
 	    
 	    
 	    {[TwitterUsername, TwitterPassword], Errs} =
-		erlyweb_forms:validate(
+		.erlyweb_forms:validate(
 		  Params,
 		  ["twitter_username", "twitter_password"],
 		  ValidationFun),
@@ -35,7 +35,7 @@ process_request(A, Usr) ->
 			update_settings(
 			  Usr, TwitterUsername, TwitterPassword,
 			  TwitterEnabled, GravatarEnabled, Background),
-		    twoorl_util:update_session(A,Usr2),
+		    util:update_session(A,Usr2),
 		    {ewr, settings, ["?success=true"]};
 		_ ->
 		    [result_data(
@@ -46,8 +46,8 @@ process_request(A, Usr) ->
 		     {ewc, ui_msgs, [A, Errs3, []]}]
 	    end;
 	_ ->
-	    UiMessages = case lists:member({"success", "true"},
-					yaws_api:parse_query(A)) of
+	    UiMessages = case .lists:member({"success", "true"},
+					.yaws_api:parse_query(A)) of
 			     true ->
 			       [settings_updated];
 			     false ->
@@ -90,7 +90,7 @@ get_validation_fun(_) ->
 verify_twitter_credentials(_, [], _) -> [];
 verify_twitter_credentials(_, _, []) -> [];
 verify_twitter_credentials(true, Username, Password) ->
-    case twitter_client:account_verify_credentials(Username, Password, []) of
+    case .twitter_client:account_verify_credentials(Username, Password, []) of
         true -> [];
         false -> [twitter_unauthorized]
     end;
@@ -133,7 +133,7 @@ checked1() ->
     <<"checked=\"checked\"">>.
     
 is_checked(Param, Params) ->
-    proplists:get_value(Param, Params)  == "on".
+    .proplists:get_value(Param, Params)  == "on".
 
 bool_to_int(false) -> 0;
 bool_to_int(true) -> 1.

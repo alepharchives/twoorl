@@ -18,7 +18,7 @@
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog.com]
 %% @copyright Yariv Sadan, 2008
 
--module(usr).
+-module(twoorl.usr).
 -compile(export_all).
 -include("twoorl.hrl").
 
@@ -29,18 +29,18 @@ get_icon(Usr, AsLink) ->
     GravatarId =
 	case usr:gravatar_enabled(Usr) of
 	    1 ->
-		twoorl_util:gravatar_id(usr:email(Usr));
+		util:gravatar_id(usr:email(Usr));
 	    0 ->
 		?DEFAULT_GRAVATAR_ID
 	end,
     if AsLink ->
 	    get_icon_link(Usr:username(), GravatarId);
        true ->
-	    twoorl_util:gravatar_icon(GravatarId)
+	    util:gravatar_icon(GravatarId)
     end.
 
 get_icon_link(Username, GravatarId) ->
-    get_link(Username, twoorl_util:gravatar_icon(GravatarId)).
+    get_link(Username, util:gravatar_icon(GravatarId)).
 
 get_timeline_usr_ids(Usr) ->
     Followings = following:find({usr_id1,'=',Usr:id()}),

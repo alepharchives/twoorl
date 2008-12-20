@@ -18,14 +18,14 @@
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog.com]
 %% @copyright Yariv Sadan, 2008
 
--module(main_controller).
+-module(twoorl.main_controller).
 -compile(export_all).
 -include("twoorl.hrl").
 
 index(A) ->
     FeedUrl = <<"/feeds/main/rss">>,
     {response,
-     [{body, [?Data(A, twoorl_util:get_feed_link(FeedUrl, <<"RSS">>)),
+     [{body, [?Data(A, util:get_feed_link(FeedUrl, <<"RSS">>)),
 	       {ewc, timeline, show, [A, undefined, [{filter_spam, true}]]}]},
        {phased_vars,
 	[{header_items,

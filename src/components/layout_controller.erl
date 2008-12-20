@@ -18,7 +18,7 @@
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog.com]
 %% @copyright Yariv Sadan, 2008
 
--module(layout_controller).
+-module(twoorl.layout_controller).
 -compile(export_all).
 -include("twoorl.hrl").
 
@@ -26,7 +26,7 @@ private() ->
     true.
 
 index(A, Ewc) ->
-    Usr = twoorl_util:get_usr(A),
+    Usr = util:get_usr(A),
     {Username, Navbar} =
 	if Usr =/= undefined ->
 		  {Usr:username(), {ewc, navbar, [A]}};

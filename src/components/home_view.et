@@ -6,7 +6,7 @@
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <form action="<% erlyweb:get_app_root(A) %>/api/send" method="post" id="txt_form">
+      <form action="<% .erlyweb:get_app_root(A) %>/api/send" method="post" id="txt_form">
 	<fieldset>
 	  <textarea rows="3" cols="70" id="txt" name="msg"></textarea>
 	  <% if HasTwitter -> twitter_msg(B, TwitterEnabled); true ->[] end %>

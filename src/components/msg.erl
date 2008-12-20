@@ -18,12 +18,12 @@
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog.com]
 %% @copyright Yariv Sadan, 2008
 
--module(msg).
+-module(twoorl.msg).
 -compile(export_all).
 -include("twoorl.hrl").
 
 get_time_since(Msg) ->
-    twoorl_util:get_time_since(Msg:created_on()).
+    util:get_time_since(Msg:created_on()).
 
 get_href(A, Msg) ->
     get_href(A, Msg, relative).
@@ -33,16 +33,16 @@ get_href(_A, Msg, relative) ->
      integer_to_list(Msg:id())];
 
 get_href(A, Msg, absolute) ->
-    [<<"http://">>, yaws_headers:host(A),
+    [<<"http://">>, .yaws_headers:host(A),
      get_href(A, Msg, relative)].
 
 process_raw_body(Body) ->
-    Body1 = twoorl_util:htmlize(Body),
+    Body1 = util:htmlize(Body),
     LenDiff = length(Body1) - length(Body),
     MaxLen = ?MAX_TWOORL_LEN + LenDiff,
     {Body2, BodyNoLinks} = add_tinyurl_links(Body1, MaxLen),
-    {Body3, RecipientNames} = add_reply_links(lists:flatten(Body2)),
-    {lists:flatten(Body3), lists:flatten(BodyNoLinks), RecipientNames}.
+    {Body3, RecipientNames} = add_reply_links(.lists:flatten(Body2)),
+    {.lists:flatten(Body3), .lists:flatten(BodyNoLinks), RecipientNames}.
 
 add_tinyurl_links(Body, MaxLen) ->
     %% regexp:parse("http://[^\s]+")
@@ -53,18 +53,18 @@ add_tinyurl_links(Body, MaxLen) ->
 	    47},
 	   47},
 	  {pclosure,{comp_class," "}}},
-    {match, Matches} = regexp:matches(Body, Re),
+    {match, Matches} = .regexp:matches(Body, Re),
 
     %% Perform two passes: once for the web formatting (anchor tags included)
     %% and once for RSS formatting (no anchor tags).
     %% Remember the tinyurl replacements from the first pass in the
     %% second pass.
     {Body1, Changes1} =
-	replace_matches(Body, Matches, fun twoorl_util:get_tinyurl/1, MaxLen),
+	replace_matches(Body, Matches, fun 'twoorl.util':get_tinyurl/1, MaxLen),
     {Body2, _Changes2} =
 	replace_matches(
 	  Body, Matches, fun(Url) ->
-				 proplists:get_value(Url, Changes1)
+				 .proplists:get_value(Url, Changes1)
 			 end, MaxLen),
     {Body1, Body2}.
 
@@ -84,7 +84,7 @@ add_reply_links(Body) ->
 replace_matches(Body, Matches, Fun) ->
     replace_matches(Body, Matches, Fun, 999999999).
 replace_matches(Body, Matches, Fun, MaxLen) ->
-    twoorl_util:replace_matches(Body, Matches, Fun, MaxLen).
+    util:replace_matches(Body, Matches, Fun, MaxLen).
 
 get_gravatar_id(Msg) ->
     case Msg:usr_gravatar_enabled() of

@@ -1,7 +1,7 @@
 <%@ index(A, [{B, Username}, Navbar, Ewc, LanguageSelect]) %>
 <table id="top" class="section1">
   <tr>
-    <td id="logo"><a href="<% erlyweb:get_app_root(A) %>/">Twoorl</a></td>
+    <td id="logo"><a href="<% .erlyweb:get_app_root(A) %>/">Twoorl</a></td>
     <td id="header" class="section1"><% header(A, B, Username) %></td>
   </tr>
 </table>
@@ -10,7 +10,7 @@
 <% LanguageSelect %>
 <div id="footer"><% B(get_source) %></div>
 
-<%@ header(A, B, undefined) %><a href="<% erlyweb:get_app_root(A) %>/login"><% B(login) %></a> | <a href="<% erlyweb:get_app_root(A) %>/register"><% B(register) %></a>
+<%@ header(A, B, undefined) %><a href="<% .erlyweb:get_app_root(A) %>/login"><% B(login) %></a> | <a href="<% .erlyweb:get_app_root(A) %>/register"><% B(register) %></a>
 <%@ header(A, B, Username) %><% B(logged_in_as) %> <% Username %> |
-<a href="<% erlyweb:get_app_root(A) %>/settings"><% B(settings) %></a> |
-<a href="<% erlyweb:get_app_root(A) %>/logout"><% B(logout) %></a>
+<a href="<% .erlyweb:get_app_root(A) %>/settings"><% B(settings) %></a> |
+<a href="<% .erlyweb:get_app_root(A) %>/logout"><% B(logout) %></a>

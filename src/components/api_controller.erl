@@ -18,17 +18,17 @@
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog.com]
 %% @copyright Yariv Sadan, 2008
 
--module(api_controller).
+-module(twoorl.api_controller).
 -export([send/1, follow/1, toggle_twitter/1]).
 -include("twoorl.hrl").
 
 send(A) ->
-    twoorl_util:auth(
+    util:auth(
       A,
       fun(Usr) ->
-	      Params = yaws_api:parse_post(A),
+	      Params = .yaws_api:parse_post(A),
 	      {[Body], Errs} =
-		  erlyweb_forms:validate(
+		  .erlyweb_forms:validate(
 		    Params, ["msg"],
 		    fun("msg", Val) ->
 			    case Val of
@@ -36,7 +36,7 @@ send(A) ->
 				    {error, empty_msg};
 				_ ->
 				    %% helps avoid DOS
-				    {ok, lists:sublist(Val, ?MAX_MSG_SIZE)}
+				    {ok, .lists:sublist(Val, ?MAX_MSG_SIZE)}
 			    end
 		    end),
 	      case Errs of
@@ -57,7 +57,7 @@ send(A) ->
 					  {body_nolinks, BodyNoLinks},
 					  {body_raw, Body},
 					  {usr_gravatar_id,
-					   twoorl_util:gravatar_id(
+					   util:gravatar_id(
 					     Usr:email())},
 					  {usr_gravatar_enabled,
 					   Usr:gravatar_enabled()},
@@ -65,7 +65,7 @@ send(A) ->
 					  {spam, Usr:spammer()}]),
 		      Msg1 = Msg:save(),
 
-%%		      twoorl_stats:cast({record, twoorl}),
+%%		      .twoorl_stats:cast({record, twoorl}),
 
 		      if TwitterEnabled andalso RecipientNames == [] ->
 			      spawn(twoorl_twitter, send_tweet, [Usr, Msg1]);
@@ -78,15 +78,15 @@ send(A) ->
 				RecipientIds = 
 				    usr:find(
 				      {username, in,
-				       lists:usort(
+				       .lists:usort(
 					 [Name || Name <- RecipientNames])}),
 				reply:save_replies(Msg1:id(), RecipientIds)
 			end),
 		      
-		      case proplists:get_value("get_html", Params) of
+		      case .proplists:get_value("get_html", Params) of
 			  "true" ->
 			      Msg2 = msg:created_on(
-				       Msg1, calendar:local_time()),
+				       Msg1, .calendar:local_time()),
 			      {ewc, timeline, show_msg, [A, Msg2]};
 			  _ ->
 			      {data, "ok"}
@@ -99,11 +99,11 @@ send(A) ->
       end).
 
 follow(A) ->
-    twoorl_util:auth(
+    util:auth(
       A,
       fun(Usr) ->
 	      {[{Username, OtherUsrId}, Val], Errs} =
-		  erlyweb_forms:validate(
+		  .erlyweb_forms:validate(
 		    A, ["username", "value"],
 		    fun(F, V) ->
 			    if V == [] ->
@@ -159,19 +159,19 @@ follow(A) ->
       end).
 
 toggle_twitter(A) ->
-    twoorl_util:auth(
+    util:auth(
       A,
       fun(Usr) ->
-	      Params = yaws_api:parse_post(A),
+	      Params = .yaws_api:parse_post(A),
 	      Enabled =
-		  case proplists:get_value("value", Params) of
+		  case .proplists:get_value("value", Params) of
 		      "true" -> 1;
 		      "false" -> 0;
 		      %% TODO need better error handling
 		      Val -> exit({unexpected_value, Val})
 		  end,
 	      Usr1 = usr:twitter_enabled(Usr, Enabled),
-	      twoorl_util:update_session(A, Usr1),
+	      util:update_session(A, Usr1),
 	      usr:update([{twitter_enabled, Enabled}], {id,'=',Usr:id()}),
 	      {response, [{html, <<"ok">>}]}
       end).

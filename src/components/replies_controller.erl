@@ -18,12 +18,12 @@
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog.com]
 %% @copyright Yariv Sadan, 2008
 
--module(replies_controller).
+-module(twoorl.replies_controller).
 -compile(export_all).
 -include("twoorl.hrl").
 
 index(A) ->
-    twoorl_util:auth(
+    util:auth(
       A,
       fun(Usr) ->
 	      Replies = reply:find({usr_id,'=',Usr:id()},

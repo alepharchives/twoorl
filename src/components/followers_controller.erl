@@ -18,7 +18,7 @@
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog.com]
 %% @copyright Yariv Sadan, 2008
 
--module(followers_controller).
+-module(twoorl.followers_controller).
 -compile(export_all).
 
 catch_all(A, [Username]) ->

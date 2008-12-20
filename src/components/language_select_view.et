@@ -2,7 +2,7 @@
 <div id="language_select_box">
 <select id="language_select" name="lang">
 <% [option(Bundle, SelectedLanguage) ||
-   Bundle <- twoorl_util:bundles()] %>
+   Bundle <- util:bundles()] %>
 </select>
 </div>
 

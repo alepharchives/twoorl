@@ -8,8 +8,8 @@
       <td><% Gravatar %></td>
       <td><div class="t3"><% B({timeline_of, Username}) %></div></td>
       <td class="following_links">
-	<a href="<% erlyweb:get_app_root(A) %>/following/<% Username %>"><% B(following) %></a> |
-	<a href="<% erlyweb:get_app_root(A) %>/followers/<% Username %>"><% B(followers) %></a>
+	<a href="<% .erlyweb:get_app_root(A) %>/following/<% Username %>"><% B(following) %></a> |
+	<a href="<% .erlyweb:get_app_root(A) %>/followers/<% Username %>"><% B(followers) %></a>
       </td>
     </tr>
   </table>

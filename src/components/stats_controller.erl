@@ -18,7 +18,7 @@
 %% @author Nick Gerakines <nick@gerakinesnet> [http://blog.socklabs.com/]
 %% @copyright Nick Gerakines, 2008
 
--module(stats_controller).
+-module(twoorl.stats_controller).
 -compile(export_all).
 
 %% disabled for now
@@ -26,6 +26,6 @@ private() ->
     true.
 
 index(_A) ->
-    Registration = twoorl_stats:call({graph, registration, 7}),
-    Updates = twoorl_stats:call({graph, twoot, 7}),
+    Registration = .twoorl_stats:call({graph, registration, 7}),
+    Updates = .twoorl_stats:call({graph, twoot, 7}),
     {data, {Registration, Updates}}.

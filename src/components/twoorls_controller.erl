@@ -18,7 +18,7 @@
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog.com]
 %% @copyright Yariv Sadan, 2008
 
--module(twoorls_controller).
+-module(twoorl.twoorls_controller).
 -compile(export_all).
 
 catch_all(A, [_Username, Id]) ->
@@ -29,9 +29,9 @@ catch_all(A, [_Username, Id]) ->
 	    exit({not_found, Id});
 	Msg ->
 	    {data, {usr:get_link(Msg:usr_username()),
-		    twoorl_util:gravatar_icon(Msg:usr_gravatar_id()),
+		    util:gravatar_icon(Msg:usr_gravatar_id()),
 		    Msg:body(),
-		    twoorl_util:i18n(A, Msg:get_time_since())}}
+		    util:i18n(A, Msg:get_time_since())}}
     end.
     
     

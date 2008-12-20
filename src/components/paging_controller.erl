@@ -18,7 +18,7 @@
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog.com]
 %% @copyright Yariv Sadan, 2008
 
--module(paging_controller).
+-module(twoorl.paging_controller).
 -compile(export_all).
 -include("twoorl.hrl").
 
@@ -35,7 +35,7 @@ index(A, Fun, ResFun) ->
 index(A, Fun, ResFun, Opts) ->
     {Page, Params} = get_page(A, true),
 	  
-    PageSize = case proplists:get_value(page_size, Opts) of
+    PageSize = case .proplists:get_value(page_size, Opts) of
 		   undefined ->
 		       ?MAX_PAGE_SIZE;
 		   Other ->
@@ -45,7 +45,7 @@ index(A, Fun, ResFun, Opts) ->
     Ewcs = Fun({limit, (Page - 1)*PageSize, PageSize}),
 	  
     Len = length(Ewcs),
-    Total = proplists:get_value(total, Opts),
+    Total = .proplists:get_value(total, Opts),
     NumPages = if Total == undefined ->
 		       if Len < PageSize ->
 			       Page;
@@ -66,8 +66,8 @@ index(A, Fun, ResFun, Opts) ->
 	     end,
 	     integer_to_list(From1),
 	     integer_to_list(To),
-	     lists:member(show_stats, Opts),
-	     case proplists:get_value(desc, Opts) of
+	     .lists:member(show_stats, Opts),
+	     case .proplists:get_value(desc, Opts) of
 		undefined -> <<"item">>;
 		Other3 -> Other3
 	     end,
@@ -82,11 +82,11 @@ get_page(A) ->
     get_page(A, false).
 get_page(A, ReturnParams) ->
     Params = if is_tuple(A) ->
-		     yaws_api:parse_query(A);
+		     .yaws_api:parse_query(A);
 		true ->
 		     A
 	     end,
-    Page = case proplists:get_value("page", Params) of
+    Page = case .proplists:get_value("page", Params) of
 	       undefined ->
 		   1;
 	       Val ->
@@ -94,7 +94,7 @@ get_page(A, ReturnParams) ->
 		       {'EXIT', _} ->
 			   1;
 		       Num ->
-			   lists:max([1, Num])
+			   .lists:max([1, Num])
 		   end
 	   end,
     if ReturnParams ->
@@ -104,21 +104,21 @@ get_page(A, ReturnParams) ->
     end.
 
 get_links(A, NumPages, Page, Params) ->
-    Page1 = lists:max([lists:min([Page, NumPages]), 1]),
-    Params1 = proplists:delete("page", Params),
+    Page1 = .lists:max([.lists:min([Page, NumPages]), 1]),
+    Params1 = .proplists:delete("page", Params),
 
     %% ugly hack ahead to get around appmod rewriting for the 'users'
     %% component
-    A1 = case yaws_arg:get_opaque_val(A, paging_path) of
+    A1 = case .yaws_arg:get_opaque_val(A, paging_path) of
 	     undefined ->
 		 A;
 	     Val ->
-		 yaws_arg:appmoddata(A, Val)
+		 .yaws_arg:appmoddata(A, Val)
 	 end,
-    BaseUrl1 = yaws_arg:url_prefix(A1),
+    BaseUrl1 = .yaws_arg:url_prefix(A1),
 
     BaseUrl2 = 
-	[BaseUrl1, "?", lists:map(fun({Key, Val}) -> [Key,$=,Val,$&] end,
+	[BaseUrl1, "?", .lists:map(fun({Key, Val}) -> [Key,$=,Val,$&] end,
 				  Params1)],
     MakeLink =
 	fun(PageNum) ->
@@ -128,11 +128,11 @@ get_links(A, NumPages, Page, Params) ->
     MakeWindow =
 	fun(Min, Max, Tail) ->
 		Seq = if Max >= Min ->
-			      lists:reverse(lists:seq(Min, Max));
+			      .lists:reverse(.lists:seq(Min, Max));
 			 true ->
 			      []
 		      end,
-		lists:foldl(
+		.lists:foldl(
 		  fun(PageNum, Acc) ->
 			  [MakeLink(PageNum) | Acc]
 		  end, Tail, Seq)
@@ -151,7 +151,7 @@ get_links(A, NumPages, Page, Params) ->
 			   end,
 			MakeWindow(
 			  Page+1,
-			  lists:min([Page1 + ?PAGING_WINDOW,
+			  .lists:min([Page1 + ?PAGING_WINDOW,
 				     NumPages]),
 			  FirstLinks);
 		  true ->
@@ -162,7 +162,7 @@ get_links(A, NumPages, Page, Params) ->
 	begin
 	    Links2 =
 		MakeWindow(
-		  lists:max([1, Page1 - ?PAGING_WINDOW]), Page1 - 1,
+		  .lists:max([1, Page1 - ?PAGING_WINDOW]), Page1 - 1,
 		  NextLinks1),
 	    if Page1 - ?PAGING_WINDOW > 2 ->
 		    [MakeLink(1), {nolink, <<"...">>} | Links2];

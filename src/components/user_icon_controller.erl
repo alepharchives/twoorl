@@ -18,7 +18,7 @@
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog.com]
 %% @copyright Yariv Sadan, 2008
 
--module(user_icon_controller).
+-module(twoorl.user_icon_controller).
 -compile(export_all).
 
 private() ->

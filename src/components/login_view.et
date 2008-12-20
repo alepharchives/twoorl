@@ -1,12 +1,12 @@
 <%@ index(A, [{B, _}, UiMsgs]) %>
 <div class="t2"><% B(login_cap) %></div>
 <% UiMsgs %>
-<form action="<% erlyweb:get_app_root(A) %>/login" method="post">
+<form action="<% .erlyweb:get_app_root(A) %>/login" method="post">
   <div><% B(username) %>:</div>
   <div><input name="username" id="input1"/></div>
   <div><% B(password) %>:</div>
   <div><input name="password" type="password"/></div>
   <div><input type="submit" value="<% B(login_submit) %>"/></div>
 </form>
-<% B(not_member) %> <a href="<% erlyweb:get_app_root(A) %>/register"><% B(register_cap) %></a>
+<% B(not_member) %> <a href="<% .erlyweb:get_app_root(A) %>/register"><% B(register_cap) %></a>
 
