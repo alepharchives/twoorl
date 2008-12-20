@@ -18,12 +18,12 @@
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog.com]
 %% @copyright Yariv Sadan, 2008
 
--module(twoorl_util).
+-module(twoorl.util).
 -compile(export_all).
 -include("twoorl.hrl").
 
 cookie(Key, Val) ->
-    yaws_api:setcookie(Key, Val, "/", "Wed 01-01-2020 00:00:00 GMT").
+    .yaws_api:setcookie(Key, Val, "/", "Wed 01-01-2020 00:00:00 GMT").
 
 gen_key() ->
     gen_key(?DEFAULT_KEY_SIZE).
@@ -35,11 +35,11 @@ gen_key(Len) ->
 	 $A,$B,$C,$D,$E,$F,$G,$H,$I,$J,$K,$L,$M,$N,$O,$P,$Q,$R,$S,$T,$U,$V,
 	 $W,$X,$Y,$Z,
 	 $1,$2,$3,$4,$5,$6,$7,$8,$9,$0},
-    Res = lists:map(
+    Res = .lists:map(
 	    fun(_) ->
-		    Idx = crypto:rand_uniform(1, 62),
+		    Idx = .crypto:rand_uniform(1, 62),
 		    element(Idx, Chars)
-	    end, lists:seq(1, Len)),
+	    end, .lists:seq(1, Len)),
     list_to_binary(Res).
 
 
@@ -47,19 +47,19 @@ join(List) ->
     join(List, ",").
 
 join(List, Delim) ->
-    lists:foldl(
+    .lists:foldl(
       fun(Elem, []) ->
 	      [Elem];
 	 (Elem, Acc) ->
 	      [Elem, Delim | Acc]
-      end, [], lists:reverse(List)).
+      end, [], .lists:reverse(List)).
 
 get_seconds_since({datetime, Val}) ->	      
     get_seconds_since(Val);
 get_seconds_since(Val) ->
-    calendar:datetime_to_gregorian_seconds(
-      calendar:local_time()) -
-       calendar:datetime_to_gregorian_seconds(Val).
+    .calendar:datetime_to_gregorian_seconds(
+      .calendar:local_time()) -
+       .calendar:datetime_to_gregorian_seconds(Val).
 
 get_time_since(DateTime) ->
     Diff = 
@@ -88,7 +88,7 @@ auth(A, Fun, ElseFun) ->
     end.
 
 get_usr(A) ->
-    Session = yaws_arg:get_opaque_val(A, session),
+    Session = .yaws_arg:get_opaque_val(A, session),
     if Session =/= undefined ->
 	    Session#session.value;
        true ->
@@ -100,7 +100,7 @@ htmlize(undefined) -> undefined;
 htmlize(List) when is_list(List) -> htmlize_l(List, []). % modified by Michael
 
 htmlize_l(List) -> htmlize_l(List, []).
-htmlize_l([], Acc) -> lists:reverse(Acc);
+htmlize_l([], Acc) -> .lists:reverse(Acc);
 
 htmlize_l([13,10|Tail], Acc) -> htmlize_l(Tail, ["<br/>"|Acc]);
 htmlize_l([13|Tail], Acc) -> htmlize_l(Tail, ["<br/>"|Acc]);
@@ -147,7 +147,7 @@ log(Module, Line, Level, FormatFun) ->
 	    ok;
 	true ->
 	    {Format, Params} = FormatFun(),
-	    error_logger:Func("~w:~b: "++ Format ++ "~n",
+	    .error_logger:Func("~w:~b: "++ Format ++ "~n",
 			      [Module, Line | Params])
     end.
 
@@ -174,17 +174,17 @@ log(Module, Line, Level, FormatFun) ->
 %%  ReplaceFun::function(), MaxLen::integer()) ->
 %%    {NewBody::iolist(), [{string(), string()}]}
 replace_matches(Body, RegExp, ReplaceFun, MaxLen) when is_tuple(RegExp) ->
-    {match, Matches} = regexp:matches(Body, RegExp),
+    {match, Matches} = .regexp:matches(Body, RegExp),
     replace_matches(Body, Matches, ReplaceFun, MaxLen);
 replace_matches(Body, Matches, ReplaceFun, MaxLen) ->
     if Matches == [] ->
-	    {lists:sublist(Body, MaxLen), []};
+	    {.lists:sublist(Body, MaxLen), []};
        true ->
 	    replace_matches1(Body, Matches, ReplaceFun, MaxLen)
     end.
 replace_matches1(Body, Matches, ReplaceFun, MaxLen) ->
     {CurIdx1, Acc, RemChars3, MatchAcc2, LenDiffAcc2} =
-	lists:foldl(
+	.lists:foldl(
 	  fun({_Begin, _MatchLength},
 	      {CurIdx, _Acc, _RemChars, _MatchAcc, LenDiffAcc} = Res)
 	     when CurIdx + LenDiffAcc > MaxLen->
@@ -193,8 +193,8 @@ replace_matches1(Body, Matches, ReplaceFun, MaxLen) ->
 	     ({Begin, MatchLength},
 	      {CurIdx, Acc, RemChars, MatchAcc, LenDiffAcc}) ->
 		  PrefixLen = Begin - CurIdx,
-		  {Prefix, RemChars1} = lists:split(PrefixLen, RemChars),
-		  {Match, RemChars2} = lists:split(MatchLength, RemChars1),
+		  {Prefix, RemChars1} = .lists:split(PrefixLen, RemChars),
+		  {Match, RemChars2} = .lists:split(MatchLength, RemChars1),
 		  {Replacement1, EffectiveReplacement1,
 		   EffectiveReplacementLen} =
 		      case ReplaceFun(Match) of
@@ -223,7 +223,7 @@ replace_matches1(Body, Matches, ReplaceFun, MaxLen) ->
 				       Rem < 1 ->
 					    [];
 				       true ->
-					    lists:sublist(Prefix, Rem)
+					    .lists:sublist(Prefix, Rem)
 				    end,
 				{Prefix1,  LenDiffAcc - MatchLength};
 			   true ->
@@ -234,11 +234,11 @@ replace_matches1(Body, Matches, ReplaceFun, MaxLen) ->
 	  end, {1, [], Body, [], 0}, Matches),
     RemCharsLength = MaxLen - (CurIdx1 - 1) - LenDiffAcc2,
     RemChars4 = if RemCharsLength > 0 ->
-			lists:sublist(RemChars3, RemCharsLength);
+			.lists:sublist(RemChars3, RemCharsLength);
 		   true ->
 			[]
 		end,
-    {[lists:reverse(Acc), RemChars4], MatchAcc2}.
+    {[.lists:reverse(Acc), RemChars4], MatchAcc2}.
     
 
 get_tinyurl("http://tinyurl.com/" ++ Rest = Url) when length(Rest) < 7 ->
@@ -246,7 +246,7 @@ get_tinyurl("http://tinyurl.com/" ++ Rest = Url) when length(Rest) < 7 ->
 get_tinyurl(Url) when length(Url) < 26 -> get_tinyurl1(Url);
 get_tinyurl(Url) ->
     TinyApi = "http://tinyurl.com/api-create.php?url=" ++ Url,
-    case http:request(TinyApi) of
+    case .http:request(TinyApi) of
 	{ok, {{_Protocol, 200, _}, _Headers, Body1}} ->
 	    get_tinyurl1(Body1);
 	Res ->
@@ -260,21 +260,21 @@ get_tinyurl1(Body) ->
 
 
 get_session_key(A) ->
-    yaws_arg:get_opaque_val(A, key).
+    .yaws_arg:get_opaque_val(A, key).
 
 update_session(A, Usr) ->
-    Key = twoorl_util:get_session_key(A),
+    Key = get_session_key(A),
     update_session(A, Usr, Key).
 
 update_session(A, Usr, Key) ->
     NewSession = #session{key=Key,
 			  value=Usr},
-    mnesia:dirty_write(NewSession),
+    .mnesia:dirty_write(NewSession),
     Opaque1 = 
-	lists:map(fun({session, _}) -> {session, NewSession};
+	.lists:map(fun({session, _}) -> {session, NewSession};
 		     (Other) -> Other
-		  end, yaws_arg:opaque(A)),
-    yaws_arg:opaque(A, Opaque1).
+		  end, .yaws_arg:opaque(A)),
+    .yaws_arg:opaque(A, Opaque1).
 
 
 gravatar_icon(GravatarId) ->
@@ -284,7 +284,7 @@ gravatar_icon(GravatarId) ->
      GravatarId, <<"\"/>">>].
 
 gravatar_id(Email) ->
-    digest2str(erlang:md5(Email)).
+    digest2str(.erlang:md5(Email)).
 
 digest2str(Digest) ->
     [[nibble2hex(X bsr 4), nibble2hex(X band 15)] ||
@@ -299,14 +299,14 @@ nibble2hex(X) when ?IN(X, 10, 15) -> X - 10 + $a.
 
 iolist_fun(Rec) ->
     fun(Field) ->
-	    erlydb_base:field_to_iolist(Rec:Field())
+	    .erlydb_base:field_to_iolist(Rec:Field())
     end.
 
 iolist_fun(Rec, Fun) ->
     fun(Field) ->
 	    case Fun(Field) of
 		default ->
-		    erlydb_base:field_to_iolist(Rec:Field());
+		    .erlydb_base:field_to_iolist(Rec:Field());
 		Other ->
 		    Other
 	    end
@@ -317,7 +317,7 @@ iolist_fun(Rec, Fun) ->
 %% Used for RSS formatting
 %% Reference: http://cyber.law.harvard.edu/rss/rss.html
 format_datetime({Date = {Year, Month, Day}, {Hour, Minute, Second}}) ->
-    Daynum = calendar:day_of_the_week(Date),
+    Daynum = .calendar:day_of_the_week(Date),
     [day(Daynum), $,, 32, itos(Day), 32, mon(Month), 32,
      itos(Year), 32, itos(Hour, 2), $:, itos(Minute, 2), $:, itos(Second, 2),
      <<" GMT">>].
@@ -327,7 +327,7 @@ itos(N) ->
 itos(N, Length) ->
     Str = itos(N),
     Diff =  Length - length(Str),
-    [lists:duplicate(Diff, $0), Str].
+    [.lists:duplicate(Diff, $0), Str].
 
 day(N) ->
     case N of
@@ -358,7 +358,7 @@ mon(N) ->
 
 
 get_feed_link(Url, Format) ->
-    erlyweb_html:a([Url], Format, [{"class", "feed_link"}]).
+    .erlyweb_html:a([Url], Format, [{"class", "feed_link"}]).
 
 with_bundle(A, Data) ->
     {data, {get_bundle(A), Data}}.
@@ -381,14 +381,14 @@ bundles() ->
 
 get_bundle(A) ->
     Module1 =
-	case erlyweb_util:get_cookie("lang", A) of
+	case .erlyweb_util:get_cookie("lang", A) of
 	    undefined ->
 		twoorl_eng;
 	    [] ->
 		twoorl_eng;
 	    Lang ->
 		Lang1 = list_to_binary(Lang),
-		case lists:keysearch(Lang1, 1, bundles()) of
+		case .lists:keysearch(Lang1, 1, bundles()) of
 		    false ->
 			?Warn("undefined language: ~p ~p", 
 			      [get_usr(A), Lang1]),
@@ -407,7 +407,7 @@ get_bundle(A) ->
 			    %% this is not supposed to happen
 			    exit(Err);
 			_ ->
-			    twoorl_eng:bundle(StrId)
+			    .twoorl_eng:bundle(StrId)
 		    end;
 		Other ->
 		    Other
@@ -419,5 +419,5 @@ i18n(A, Val) ->
 	    
 
 delete_sessions() ->
-    Sessions = mnesia:dirty_match_object(#session{_ = '_'}),
-    lists:foreach(fun mnesia:dirty_delete_object/1, Sessions).
+    Sessions = .mnesia:dirty_match_object(#session{_ = '_'}),
+    .lists:foreach(fun(S) -> .mnesia:dirty_delete_object(S) end, Sessions).

@@ -1,7 +1,7 @@
 all: code
 
 code: clean
-	erl -s make all load -s init stop
+	erl -noshell -eval 'filelib:ensure_dir("./ebin/"), filelib:ensure_dir("./ebin/twoorl/"), make:all().' -pa ebin -s erlang halt
 
 run:	code
 	erl -noshell -eval 'filelib:ensure_dir("./log/").' -pa ebin -s erlang halt
@@ -11,7 +11,7 @@ run-app:	code
 	erl -sname twoorlapp -setcookie twoorl -mnesia dir "'twoorl.mnesia'" -yaws embedded true -pa ebin -boot start_sasl -eval '[application:start(X) || X <- [inets, crypto, mnesia, twoorl]]'
 	
 clean:
-	rm -fv ebin/*.beam twoorl.rel twoorl.script twoorl.boot erl_crash.dump *.log *.access
+	rm -fv ebin/*.beam ebin/twoorl/*.beam twoorl.rel twoorl.script twoorl.boot erl_crash.dump *.log *.access
 
 cleandb:
 	rm -rfv *.mnesia Mnesia*

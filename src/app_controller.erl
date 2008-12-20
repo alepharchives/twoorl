@@ -18,18 +18,18 @@
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog.com]
 %% @copyright Yariv Sadan, 2008
 
--module(twoorl_app_controller).
+-module(twoorl.app_controller).
 -export([hook/1]).
 -include("twoorl.hrl").
 
 hook(A) ->
-    case erlyweb:get_initial_ewc({ewc, A}) of
+    case .erlyweb:get_initial_ewc({ewc, A}) of
 	{page, "/"} -> start(A);
 	{page, "/static" ++ _} = Ewc -> Ewc;
 	{page, "/favicon.ico"} -> {page, "/static/favicon.ico"};
 	{page, [$/ | Username] = Path} ->
-	    A2 = yaws_arg:appmoddata(A, "/users/" ++ Username),
-	    A3 = yaws_arg:add_to_opaque(A2, {paging_path, Path}),
+	    A2 = .yaws_arg:appmoddata(A, "/users/" ++ Username),
+	    A3 = .yaws_arg:add_to_opaque(A2, {paging_path, Path}),
 	    start(A3);
 
 	%% redirect user urls from "/users/[Username]" to "/[Username]"
@@ -42,7 +42,7 @@ hook(A) ->
 
 start(A) ->
     {A2, LoggedIn} = auth(A),
-    Appmod = yaws_arg:appmoddata(A2),
+    Appmod = .yaws_arg:appmoddata(A2),
     case Appmod of
 	"/api" ++ _ ->
 	    {ewc, A2};
@@ -57,7 +57,7 @@ start(A) ->
 			  _ ->
 			      Appmod
 		      end,
-	    A3 = yaws_arg:appmoddata(A2, Appmod1),
+	    A3 = .yaws_arg:appmoddata(A2, Appmod1),
 	    {phased, {ewc, A3},
 	     fun(_Ewc, Data, PhasedVars) ->
 		     {ewc, html_container,
@@ -70,7 +70,7 @@ start(A) ->
 %% Populate the arg's opaque field with {session, Session} if the
 %% request's "key" cookie value could be found in mnesia.
 auth(A) ->
-    case erlyweb_util:get_cookie("key", A) of
+    case .erlyweb_util:get_cookie("key", A) of
 	undefined ->
 	    {A, false};
 	Val ->
@@ -79,21 +79,21 @@ auth(A) ->
 		undefined ->
 		    {A, false};
 		Session ->
-		    {yaws_arg:add_all_to_opaque(
+		    {.yaws_arg:add_all_to_opaque(
 		       A,
 		       [{key, Key}, {session, Session}]), true}
 	    end
     end.
 
 lookup(Key) ->
-    case mnesia:dirty_read(session, Key) of
+    case .mnesia:dirty_read(session, Key) of
 	[] ->
 	    case usr:find_first({session_key,'=',Key}) of
 		undefined ->
 		    undefined;
 		Usr ->
 		    Session = #session{key=Key, value=Usr},
-		    mnesia:dirty_write(Session),
+		    .mnesia:dirty_write(Session),
 		    Session
 	    end;
 	[Session] ->

@@ -1,4 +1,4 @@
--define(L(Msg), io:format("~p:~b ~p ~n", [?MODULE, ?LINE, Msg])).
+-define(L(Msg), .io:format("~p:~b ~p ~n", [?MODULE, ?LINE, Msg])).
 
 -record(session, {key, value}).
 
@@ -19,12 +19,12 @@
 -define(DEFAULT_BACKGROUND, <<"/static/bg1.jpg">>).
 
 -define(Debug(Msg, Params),
-	twoorl_util:log(?MODULE, ?LINE, debug, fun() -> {Msg, Params} end)).
+	.twoorl.util:log(?MODULE, ?LINE, debug, fun() -> {Msg, Params} end)).
 -define(Info(Msg, Params),
- 	twoorl_util:log(?MODULE, ?LINE, info, fun() -> {Msg, Params} end)).
+ 	.twoorl.util:log(?MODULE, ?LINE, info, fun() -> {Msg, Params} end)).
 -define(Warn(Msg, Params),
- 	twoorl_util:log(?MODULE, ?LINE, warn, fun() -> {Msg, Params} end)).
+ 	.twoorl.util:log(?MODULE, ?LINE, warn, fun() -> {Msg, Params} end)).
 -define(Error(Msg, Params),
- 	twoorl_util:log(?MODULE, ?LINE, error, fun() -> {Msg, Params} end)).
+ 	.twoorl.util:log(?MODULE, ?LINE, error, fun() -> {Msg, Params} end)).
 
--define(Data(A, Data), {data, {twoorl_util:get_bundle(A), Data}}.
+-define(Data(A, Data), {data, {.twoorl.util:get_bundle(A), Data}}.
