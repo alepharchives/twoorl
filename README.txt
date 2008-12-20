@@ -20,6 +20,7 @@ BOOT OPTION A - standalone yaws server
 
 
 BOOT OPTION B - as part of an OTP supervisor tree (with yaws in embedded mode)
+	(Notice: this boot option isn't working - YET - on the 'packaged' branch)
 	1. Edit ebin/twoorl.app with your appropriate environment variables
 	2. Open a shell and type the following in twoorl's directory:
 
