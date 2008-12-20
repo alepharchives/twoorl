@@ -1,4 +1,4 @@
-{"src/twoorl.erl", [{outdir, "./ebin"}]}.
+{"src/boot.erl", [{outdir, "./ebin"}]}.
 {"src/twoorl_util.erl", [{outdir, "./ebin"}]}.
 {"src/twoorl_sup.erl", [{outdir, "./ebin"}]}.
 {"src/twoorl_server.erl", [{outdir, "./ebin"},

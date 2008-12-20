@@ -18,10 +18,10 @@
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog.com]
 %% @copyright Yariv Sadan, 2008
 
--module(twoorl).
+-module(boot).
 -compile(export_all).
 -include("twoorl.hrl").
--include("twoorl_app.hrl").
+-include("app.hrl").
 
 start() ->
     process_flag(trap_exit, true),
