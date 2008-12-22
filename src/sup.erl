@@ -28,9 +28,32 @@ start_link(Args) ->
 
 %% The callback must include the package name as it will be called from an external process.
 init(Args) ->
-    % Nothing interesting to pass for now.
-    WebserverArgs = [],
-    {ok, {{one_for_one, 10, 10},
-	  [{twoorl_yaws,
-	    {.twoorl_server, start_link, [Args]},
-	    permanent, 20000, worker, WebserverArgs}]}}.
+    
+    % Supervisor config: http://www.erlang.org/doc/design_principles/sup_princ.html#5.2
+    % Restart Strategy: one_for_one | one_for_all | rest_for_one
+    % MaxR, MaxT: If more than MaxR number of restarts occur in the last MaxT seconds,
+    % then the supervisor terminates all the child processes and then itself.
+    RestartStrategy = one_for_one,
+    MaxR = 10,
+    MaxT = 10,
+    
+    % Child specification: http://www.erlang.org/doc/design_principles/sup_princ.html#spec
+    % Id: internal child id used by the supervisor
+    % StartFunc: {M=<callback_module>, F, A}
+    % PACKAGE USERS: You might want to provide the FULL PACKAGE NAME as this function
+    % will be called by a the supervisor module - that lives in the . package!
+    % Restart: permanent | temporary | transient
+    % Shutdown: brutal_kill | wait up to Timeout milisecs for cleanup | infinity (if child is a sup)
+    % Type: supervisor | worker
+    % Modules: [<callback_module>] | dynamic (when child is a gen_event)
+    
+    ChildId = twoorl.webserver,
+    % We're passing the webserver configs that were read in the .app file
+    StartFunc = {twoorl.webserver, start_link, [Args]},
+    Restart = permanent,
+    Shutdown = 20000, % This is why it takes so long for the app to shutdown!
+    Type = worker,
+    Modules = [sup],
+    
+    {ok, {{RestartStrategy, MaxR, MaxT},
+	  [{ChildId, StartFunc, Restart, Shutdown, Type, Modules}]}}.
