@@ -1,6 +1,6 @@
 {"src/boot.erl", [{outdir, "./ebin/twoorl"}]}.
 {"src/util.erl", [{outdir, "./ebin/twoorl"}]}.
-{"src/twoorl_sup.erl", [{outdir, "./ebin"}]}.
+{"src/sup.erl", [{outdir, "./ebin/twoorl"}]}.
 {"src/twoorl_server.erl", [{outdir, "./ebin"},
 	{i, "/Users/yariv/yaws/include"}]}.
 {"elib/rfc4627/*", [{outdir, "./ebin"}]}.

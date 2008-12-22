@@ -34,7 +34,7 @@ start() ->
     [{inets, Inets}, {crypto, Crypto}, {mnesia, Mnesia}].
 
 start(_Type, Args) ->
-    .twoorl_sup:start_link([Args]).
+    sup:start_link([Args]).
 
 start_phase(mysql, _, DBConfigs) ->
     [mysql_connect(Hostname, User, Password, Database, PoolSize)
