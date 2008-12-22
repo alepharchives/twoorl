@@ -23,7 +23,7 @@
 -include("twoorl.hrl").
 
 index(A) ->
-    FeedUrl = <<"/feeds/main/rss">>,
+    FeedUrl = list_to_binary(.erlyweb:get_app_root(A) ++ "/feeds/main/rss"),
     {response,
      [{body, [?Data(A, util:get_feed_link(FeedUrl, <<"RSS">>)),
 	       {ewc, timeline, show, [A, undefined, [{filter_spam, true}]]}]},
