@@ -4,14 +4,14 @@
   {modules, [twoorl, twoorl_server, twoorl_sup]},
   {registered, [twoorl]},
   {applications, [kernel, stdlib, sasl, crypto, inets, mnesia]},
-  {mod, {twoorl, [
+  {mod, {twoorl.boot, [
       [
         {port, 5001},
         {servername, "twoorl.com"},
         {listen, {0, 0, 0, 0}},
         {docroot, "www"},
         {appmods, [{"/", erlyweb}]},
-        {opaque, [{"appname", "twoorl"}]}
+        {opaque, [{"package", "twoorl"}]}
       ],
       [
         {port, 5001},
@@ -19,7 +19,7 @@
         {listen, {0, 0, 0, 0}},
         {docroot, "www"},
         {appmods, [{"/", erlyweb}]},
-        {opaque, [{"appname", "twoorl"}]}
+        {opaque, [{"package", "twoorl"}]}
       ]
     ]}},
   {env, []},
