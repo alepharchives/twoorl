@@ -21,6 +21,13 @@
 -module(twoorl.webserver).
 -behaviour(gen_server).
 
+-import(gen_server).
+-import(application).
+-import(yaws_config).
+-import(lists).
+-import(proplists).
+-import(yaws_api).
+
 -include_lib("yaws/include/yaws.hrl").
 -include("twoorl.hrl").
 
@@ -28,30 +35,30 @@
 -export([terminate/2, code_change/3, set_conf/1]).
 
 start_link(Args) ->
-    .gen_server:start_link({local, ?MODULE}, ?MODULE, Args, []).
+    gen_server:start_link({local, ?MODULE}, ?MODULE, Args, []).
 
 %% These Args are carried here from the supervisor
 init([ServerConfigs]) ->
     process_flag(trap_exit, true),
-    case .application:start(yaws) of
+    case application:start(yaws) of
         ok -> set_conf(ServerConfigs);
         Error -> {stop, Error}
     end.
 
 set_conf(ServerConfigs) ->
-    GC = .yaws_config:make_default_gconf(false, "twoorl"),
-    SCs = .lists:map(
+    GC = yaws_config:make_default_gconf(false, "twoorl"),
+    SCs = lists:map(
 		fun(Sconf) ->
 			#sconf{
-				port = .proplists:get_value(port, Sconf, 80),
-				servername = .proplists:get_value(servername, Sconf, "localhost"),
-				listen = .proplists:get_value(listen, Sconf, {0,0,0,0}),
-				docroot = .proplists:get_value(docroot, Sconf, "www"),
-				appmods = .proplists:get_value(appmods, Sconf, [{"/", erlyweb}]),
-				opaque = .proplists:get_value(opaque, Sconf, [{"appname", "twoorl"}])
+				port = proplists:get_value(port, Sconf, 80),
+				servername = proplists:get_value(servername, Sconf, "localhost"),
+				listen = proplists:get_value(listen, Sconf, {0,0,0,0}),
+				docroot = proplists:get_value(docroot, Sconf, "www"),
+				appmods = proplists:get_value(appmods, Sconf, [{"/", erlyweb}]),
+				opaque = proplists:get_value(opaque, Sconf, [{"appname", "twoorl"}])
 			    }
 		end, ServerConfigs),
-    try .yaws_api:setconf(GC, [SCs]) of
+    try yaws_api:setconf(GC, [SCs]) of
         ok -> {ok, started};
         Errora -> {stop, Errora}
     catch
@@ -64,6 +71,6 @@ handle_cast(_Message, State) -> {noreply, State}.
 
 handle_info(_Info, State) -> {noreply, State}.
 
-terminate(_Reason, _State) -> .application:stop(yaws), ok.
+terminate(_Reason, _State) -> application:stop(yaws), ok.
 
 code_change(_OldVsn, State, _Extra) -> {ok, State}.

@@ -19,6 +19,12 @@
 %% @copyright Yariv Sadan, 2008
 
 -module(twoorl.navbar_controller).
+
+-import(lists).
+-import(yaws_arg).
+-import(erlyweb).
+-import(erlyweb_html).
+
 -compile(export_all).
 -include("twoorl.hrl").
 
@@ -26,7 +32,7 @@ private() ->
     true.
 
 index(A) ->
-    Appmod = tl(.yaws_arg:appmoddata(A)),
+    Appmod = tl(yaws_arg:appmoddata(A)),
     Usr = util:get_usr(A),
     Username = Usr:username(),
     B = util:get_bundle(A),
@@ -36,11 +42,11 @@ index(A) ->
 	 {"users/" ++ binary_to_list(Username), Username, B(me)},
 	 {"main", <<"main">>, B(everyone)}],
     Links = 
-	.lists:map(
+	lists:map(
 	  fun({Tab, _Href, Title}) when Tab == Appmod ->
 		     Title;
 	     ({_Tab, Href, Title}) ->
-		  .erlyweb_html:a([.erlyweb:get_app_root(A), Href], Title)
+		  erlyweb_html:a([erlyweb:get_app_root(A), Href], Title)
 	  end, Tabs),
     {data, Links}.
 	      

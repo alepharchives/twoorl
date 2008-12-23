@@ -19,15 +19,22 @@
 %% @copyright Yariv Sadan, 2008
 
 -module(twoorl.register_controller).
+
+-import(regexp).
+-import(crypto).
+-import(yaws_api).
+-import(yaws_arg).
+-import(erlyweb_forms).
+
 -compile(export_all).
 -include("twoorl.hrl").
 
 index(A) ->
-    case .yaws_arg:method(A) of
+    case yaws_arg:method(A) of
 	'POST' ->
-	    Params = .yaws_api:parse_post(A),
+	    Params = yaws_api:parse_post(A),
 	    {[Username, Email, Password, Password2], Errs} =
-		.erlyweb_forms:validate(
+		erlyweb_forms:validate(
 		  Params, ["username", "email", "password", "password2"],
 		  fun validate/2),
 	    Errs1 = 
@@ -73,7 +80,7 @@ validate_username([]) -> {error, {missing_field, "username"}};
 validate_username(Val) ->
     %% regexp:parse("[A-Za-z0-9_]+")
     Re = {pclosure,{char_class,[95,{48,57},{97,122},{65,90}]}},
-    case .regexp:match(Val, Re) of
+    case regexp:match(Val, Re) of
 	nomatch ->
 	    {error, {invalid_username, util:htmlize(Val)}};
 	{match,First,Len} when First =/= 1;
@@ -94,5 +101,5 @@ register_usr(Username, Email, Password) ->
 			{email, Email},
 			%% not the most secure password storage method,
 			%% but good enough for now
-			{password, .crypto:sha(Username ++ Password)}]),
+			{password, crypto:sha(Username ++ Password)}]),
     usr:save(Usr).

@@ -18,6 +18,9 @@
 %% @author Yariv Sadan <yarivsblog@gmail.com> [http://yarivsblog.com]
 %% @copyright Yariv Sadan, 2008
 -module(twoorl.grid_controller).
+
+-import(lists).
+
 -export([private/0, index/2, index/3]).
 
 private() ->
@@ -28,11 +31,11 @@ index(A, Cells) ->
 
 index(_A, Cells, NumCols) ->
     {_, Rows1} =
-	.lists:foldl(
+	lists:foldl(
 	  fun(Cell, {N, [Hd | Tl]}) when N == NumCols ->
 		  {1, [[Cell] |
-		       [.lists:reverse(Hd) | Tl]]};
+		       [lists:reverse(Hd) | Tl]]};
 	     (Cell, {N, [Hd | Tl]}) ->
 		  {N+1, [[Cell | Hd] | Tl]}
 	  end, {0, [[]]}, Cells),
-    .lists:reverse(Rows1).
+    lists:reverse(Rows1).

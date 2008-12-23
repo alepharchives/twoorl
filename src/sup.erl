@@ -21,10 +21,12 @@
 -module(twoorl.sup).
 -behaviour(supervisor).
 
+-import(supervisor).
+
 -export([start_link/1, init/1]).
 
 start_link(Args) ->
-    .supervisor:start_link({local, ?MODULE}, ?MODULE, Args).
+    supervisor:start_link({local, ?MODULE}, ?MODULE, Args).
 
 %% The callback must include the package name as it will be called from an external process.
 init(Args) ->

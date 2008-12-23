@@ -19,15 +19,24 @@
 %% @copyright Yariv Sadan, 2008
 
 -module(twoorl.boot).
+
+-import(application).
+-import(mnesia).
+-import(lists).
+-import(mysql).
+-import(file).
+-import(erlyweb).
+-import(erlydb).
+
 -compile(export_all).
 -include("twoorl.hrl").
 -include("app.hrl").
 
 start() ->
     process_flag(trap_exit, true),
-    Inets = (catch .application:start(inets)),
-    Crypto = (catch .application:start(crypto)),
-    Mnesia = (catch .application:start(mnesia)),
+    Inets = (catch application:start(inets)),
+    Crypto = (catch application:start(crypto)),
+    Mnesia = (catch application:start(mnesia)),
     start_phase(mysql, normal, [{?DB_HOSTNAME, ?DB_USERNAME, ?DB_PASSWORD, ?DB_DATABASE, ?DB_POOL_SIZE}]),
     start_phase(mnesia, normal, [session]),
     start_phase(compile, normal, []),
@@ -52,35 +61,35 @@ start_phase(mnesia, _, Tables) ->
     %% Mnesia should have been started already, because of that the schema
     %% is in memory if the schema doesn't already exist on disc. If so we
     %% change the type so that it writes to the mnesia dir we set. -- nkg
-    case .mnesia:table_info(schema, storage_type) of
+    case mnesia:table_info(schema, storage_type) of
         ram_copies -> 
-            .mnesia:change_table_copy_type(schema, node(), disc_copies);
+            mnesia:change_table_copy_type(schema, node(), disc_copies);
         _ ->
             ok
     end,
-    ExistingTables = .mnesia:system_info(tables) -- [schema],
+    ExistingTables = mnesia:system_info(tables) -- [schema],
     [create_table(Table) ||
-	Table <- Tables, not .lists:member(Table, ExistingTables)],
+	Table <- Tables, not lists:member(Table, ExistingTables)],
     ok.
 
 create_table(session) ->
-    .mnesia:create_table(session, [{attributes, record_info(fields, session)}]),
+    mnesia:create_table(session, [{attributes, record_info(fields, session)}]),
     ok.
 
 mysql_connect(Hostname, User, Password, Database, PoolSize) ->
     PoolId = twoorl,
-    .erlydb:start(
+    erlydb:start(
       mysql, [{hostname, Hostname},
 	      {username, User},
 	      {password, Password},
 	      {database, Database},
 	      {poolid, PoolId},
 	      {logfun, fun 'twoorl.util':log/4}]),
-    .lists:foreach(
+    lists:foreach(
       fun(_PoolNumber) ->
-	      .mysql:connect(PoolId, Hostname, undefined, User, Password,
+	      mysql:connect(PoolId, Hostname, undefined, User, Password,
 			    Database, true)
-      end, .lists:seq(1, PoolSize)).
+      end, lists:seq(1, PoolSize)).
 
 compile() ->
     compile([]).
@@ -92,15 +101,15 @@ compile_update() ->
     compile([{last_compile_time, auto}]).
 
 compile(Opts) ->
-    .erlyweb:compile(twoorl, compile_dir(default),
+    erlyweb:compile(twoorl, compile_dir(default),
 		    [{erlydb_driver, mysql}, {erlydb_timeout, 20000} | Opts]).
 
 compile_dir(auto) ->
-    {ok, CWD} = .file:get_cwd(), CWD;
+    {ok, CWD} = file:get_cwd(), CWD;
 compile_dir(default) ->
     ?APP_PATH;
 compile_dir(appconfig) ->
-    {ok, CDir} = .application:get_env(twoorl, compile_dir),
+    {ok, CDir} = application:get_env(twoorl, compile_dir),
     CDir;
 compile_dir(Dir) ->
     Dir.

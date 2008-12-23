@@ -19,14 +19,20 @@
 %% @copyright Yariv Sadan, 2008
 
 -module(twoorl.login_controller).
+
+-import(crypto).
+-import(yaws_arg).
+-import(erlyweb_forms).
+-import(erlyweb_util).
+
 -compile(export_all).
 -include("twoorl.hrl").
 
 index(A) ->
-    case .yaws_arg:method(A) of
+    case yaws_arg:method(A) of
 	'POST' ->
 	    {[Usr, Password], Errs} =
-		.erlyweb_forms:validate(
+		erlyweb_forms:validate(
 		  A,
 		  ["username", "password"],
 		  fun(Field, Val) ->
@@ -43,8 +49,8 @@ index(A) ->
 		  end),
 	    Errs1 = 
 		if Errs == [] ->
-%%			.twoorl_stats:cast({record, site_login}),
-			Hash = .crypto:sha([usr:username(Usr), Password]),
+%%			twoorl_stats:cast({record, site_login}),
+			Hash = crypto:sha([usr:username(Usr), Password]),
 			case usr:password(Usr) of
 			    Hash ->
 				[];
@@ -74,7 +80,7 @@ get_usr(Username) ->
 
 do_login(A, Usr) ->
     Key = util:gen_key(),
-    LangCookie = .erlyweb_util:get_cookie("lang", A),
+    LangCookie = erlyweb_util:get_cookie("lang", A),
     Usr1 = case LangCookie of
 	       undefined ->
 		   Usr;

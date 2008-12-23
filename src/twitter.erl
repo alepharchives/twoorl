@@ -34,7 +34,7 @@ post(Url, Username, Password, Params) ->
     Headers =
 	[{"Authorization", "Basic " ++ Encoded}],
     ContentType = "application/x-www-form-urlencoded",
-    Body = .twoorl.util:join([[Field,$=,yaws_api:url_encode(Val)] ||
+    Body = twoorl.util:join([[Field,$=,yaws_api:url_encode(Val)] ||
 				{Field,Val} <- Params], "&"),
     http:request(
       post,

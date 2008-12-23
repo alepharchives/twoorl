@@ -19,10 +19,15 @@
 %% @copyright Yariv Sadan, 2008
 
 -module(twoorl.logout_controller).
+
+-import(mnesia).
+-import(yaws_api).
+-import(yaws_arg).
+
 -compile(export_all).
 
 index(A) ->
-    case .yaws_arg:get_opaque_val(A, key) of
+    case yaws_arg:get_opaque_val(A, key) of
 	undefined ->
 	    ok;
 	Key ->
@@ -31,7 +36,7 @@ index(A) ->
 			 usr:update([{session_key,undefined}],
 				    {id,'=',Usr:id()})
 		 end),
-	    .mnesia:dirty_delete(session, Key)
+	    mnesia:dirty_delete(session, Key)
     end,
-    {response, [.yaws_api:setcookie("key", ""),
+    {response, [yaws_api:setcookie("key", ""),
 		ewr]}.

@@ -19,6 +19,13 @@
 %% @copyright Yariv Sadan, 2008
 
 -module(twoorl.api_controller).
+
+-import(lists).
+-import(proplists).
+-import(calendar).
+-import(yaws_api).
+-import(erlyweb_forms).
+
 -export([send/1, follow/1, toggle_twitter/1]).
 -include("twoorl.hrl").
 
@@ -26,9 +33,9 @@ send(A) ->
     util:auth(
       A,
       fun(Usr) ->
-	      Params = .yaws_api:parse_post(A),
+	      Params = yaws_api:parse_post(A),
 	      {[Body], Errs} =
-		  .erlyweb_forms:validate(
+		  erlyweb_forms:validate(
 		    Params, ["msg"],
 		    fun("msg", Val) ->
 			    case Val of
@@ -36,7 +43,7 @@ send(A) ->
 				    {error, empty_msg};
 				_ ->
 				    %% helps avoid DOS
-				    {ok, .lists:sublist(Val, ?MAX_MSG_SIZE)}
+				    {ok, lists:sublist(Val, ?MAX_MSG_SIZE)}
 			    end
 		    end),
 	      case Errs of
@@ -65,7 +72,7 @@ send(A) ->
 					  {spam, Usr:spammer()}]),
 		      Msg1 = Msg:save(),
 
-%%		      .twoorl_stats:cast({record, twoorl}),
+%%		      twoorl_stats:cast({record, twoorl}),
 
 		      if TwitterEnabled andalso RecipientNames == [] ->
 			      spawn(twoorl_twitter, send_tweet, [Usr, Msg1]);
@@ -78,15 +85,15 @@ send(A) ->
 				RecipientIds = 
 				    usr:find(
 				      {username, in,
-				       .lists:usort(
+				       lists:usort(
 					 [Name || Name <- RecipientNames])}),
 				reply:save_replies(Msg1:id(), RecipientIds)
 			end),
 		      
-		      case .proplists:get_value("get_html", Params) of
+		      case proplists:get_value("get_html", Params) of
 			  "true" ->
 			      Msg2 = msg:created_on(
-				       Msg1, .calendar:local_time()),
+				       Msg1, calendar:local_time()),
 			      {ewc, timeline, show_msg, [A, Msg2]};
 			  _ ->
 			      {data, "ok"}
@@ -103,7 +110,7 @@ follow(A) ->
       A,
       fun(Usr) ->
 	      {[{Username, OtherUsrId}, Val], Errs} =
-		  .erlyweb_forms:validate(
+		  erlyweb_forms:validate(
 		    A, ["username", "value"],
 		    fun(F, V) ->
 			    if V == [] ->
@@ -162,9 +169,9 @@ toggle_twitter(A) ->
     util:auth(
       A,
       fun(Usr) ->
-	      Params = .yaws_api:parse_post(A),
+	      Params = yaws_api:parse_post(A),
 	      Enabled =
-		  case .proplists:get_value("value", Params) of
+		  case proplists:get_value("value", Params) of
 		      "true" -> 1;
 		      "false" -> 0;
 		      %% TODO need better error handling

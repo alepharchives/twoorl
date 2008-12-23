@@ -19,6 +19,9 @@
 %% @copyright Yariv Sadan, 2008
 
 -module(twoorl.timeline_controller).
+
+-import(proplists).
+
 -compile(export_all).
 -include("twoorl.hrl").
 
@@ -40,7 +43,7 @@ show(A, UserIds) ->
 show(A, UserIds, Opts) ->
     OrderBy = {order_by, {created_on, desc}},
     
-    Where = case .proplists:get_value(filter_spam, Opts) of
+    Where = case proplists:get_value(filter_spam, Opts) of
 		true ->
 		    {'not', {spam,'=',1}};
 		_ ->
@@ -75,7 +78,7 @@ show_msgs(A, Msgs) ->
 
 show_msgs(A, Msgs, Opts) ->
     Opts1 =
-	case .proplists:get_value(big_first, Opts) of
+	case proplists:get_value(big_first, Opts) of
 	    undefined ->
 		Opts;
 	    true ->
@@ -94,7 +97,7 @@ show_msg(A, Msg) ->
 show_msg(A, Msg, Opts) ->
     Username = Msg:usr_username(),
     {Icon, Userlink} =
-	case .proplists:get_value(hide_user, Opts) of
+	case proplists:get_value(hide_user, Opts) of
 	    true ->
 		{[], []};
 	    _ ->
@@ -105,7 +108,7 @@ show_msg(A, Msg, Opts) ->
 	end,
     CreatedOn = util:i18n(A, msg:get_time_since(Msg)),
 
-    IsBig = .proplists:get_value(is_big, Opts) == true,
+    IsBig = proplists:get_value(is_big, Opts) == true,
     
     {data, {Username, Icon, Userlink,
 	    Msg:body(), msg:get_href(A, Msg), CreatedOn, IsBig}}.
