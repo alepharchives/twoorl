@@ -5,7 +5,7 @@ code: clean
 
 run:	code
 	erl -noshell -eval 'filelib:ensure_dir("./log/").' -pa ebin -s erlang halt
-	erl -yaws debug -run yaws --conf yaws.conf
+	erl -run yaws -yaws debug -conf yaws.conf
 
 run-app:	code
 	erl -sname twoorlapp -setcookie twoorl -mnesia dir "'twoorl.mnesia'" -yaws embedded true -pa ebin -boot start_sasl -eval '[application:start(X) || X <- [inets, crypto, mnesia, twoorl]]'
